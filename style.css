@@ -1,0 +1,234 @@
+﻿body {
+    overflow-x: hidden;
+}
+
+/* //! LOGIN */
+.imagemLogin{
+    height: 100%; 
+    background-image: url('images/techealth_square.jpg'); 
+    background-size: cover; 
+    background-position: center;
+    object-fit: contain;
+}
+@media (max-width: 960px) {
+    .imagemLogin{
+        /* height: 80%;  */
+        background-size: contain; /* Ajusta a imagem sem cortar */
+        background-repeat: no-repeat; /* Evita repetir a imagem */
+    }
+}
+
+.only-mobile {
+    display: none; /* Oculta o elemento por padrão */
+}
+
+@media (max-width: 767px) {
+    .only-mobile {
+        display: block; /* Exibe em telas menores que 576px */
+    }
+}
+
+
+
+.content {
+    margin-left: 60px;
+    transition: margin-left 0.3s ease-in-out;
+    padding: 20px;
+}
+
+.content.shift {
+    margin-left: 300px;
+}
+
+
+
+
+
+/* //!DASHBOARD */
+.background-image {
+    background-image: url('images/fundo2.bmp');
+    /* background-image: url('images/fundo.bmp'); */
+    /* background-image: url('images/techealthwall.jpg'); */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    transition: margin-left 0.3s;
+}
+
+.background-image.shift {
+    margin-left: 200px;
+}
+
+.mt-100{
+    margin-top:100px;
+}
+
+table {
+    word-wrap: break-word;
+    table-layout: auto;
+}
+
+th, td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-responsive {
+    margin: auto;
+    max-width: 100%;
+}
+
+.form-floating-label {
+    position: relative;
+    margin-top: 20px;
+}
+
+.form-control:focus + label,
+.form-control:not(:placeholder-shown) + label {
+    top: -12px;
+    font-size: 12px;
+    transition: 0.3s ease-in-out;
+    background-color: white;
+}
+
+.form-floating-label label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+.inputback {
+    background-color: white;
+}
+
+.select2-container .select2-selection--single {
+    appearance: none;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    color: #495057;
+    cursor: pointer;
+    width: 100%;
+    height: 45px !important;
+    box-sizing: border-box;
+}
+
+.select2-container {
+    z-index: 1055 !important; /* Garante que esteja acima do modal */
+}
+
+.select2-dropdown {
+    z-index: 1060 !important; /* Garante que o dropdown esteja visível */
+}
+
+.div-selecao {
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    padding: 5px; 
+    display: flex; 
+/*    justify-content: space-between; */
+    align-items: center; 
+    background-color: #f9f9f9; 
+}
+.div-selecaoPrest, .div-selecaoGrupo{
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    padding: 5px; 
+    display: flex; 
+/*    justify-content: space-between; */
+    align-items: center; 
+    background-color: #f9f9f9; 
+}
+.lista-item {
+    font-size: 12px; 
+    padding: 5px; 
+    align-items: center; 
+    border: dotted 1px gray;
+    border-radius: 10px;
+    margin-right:2px;
+}
+
+.lista-item button {
+    font-size: 12px; /* Botão também com fonte pequena */
+}
+
+
+.btnTrash{
+/*    width: 5px;*/
+/*    height: 5px;*/
+    background-color:red;
+    border: none;
+    border-radius:3px;
+    color:white;
+}
+
+
+.btnDashboard {
+    background-color: #02b86f !important;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 16px;
+    font-size: 16px; /* Tamanho confortável para toque */
+    transition: background-color 0.3s ease;
+}
+
+.btnDashboard:hover {
+    background-color: #008E55 !important;
+}
+
+.logoTechealth{
+    max-width: 130px !important;
+}
+
+@media (max-width: 768px) {
+    .btnDashboard {
+        font-size: 14px; /* Tamanho menor para telas pequenas */
+        padding: 10px 12px;
+    }
+    .logoTechealth{
+        max-width: 100px !important;
+    }
+}
+
+
+/* //! loader */
+ /* Overlay de carregamento */
+ #loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Coloca o overlay acima de tudo */
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo do spinner */
+.spinner {
+    border: 6px solid rgba(255, 255, 255, 0.3); /* Fundo do spinner */
+    border-top: 6px solid #fff; /* Cor da borda superior */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

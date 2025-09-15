@@ -3,11 +3,11 @@
 set_time_limit(600);
 ini_set('memory_limit', '768M');
 
-if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
     die("Erro: vendor/autoload.php não encontrado. Rode 'composer install' no diretório do projeto ou verifique a pasta vendor.");
 }
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -24,9 +24,9 @@ $data_fim = date("d/m/Y", strtotime($data_final));
 
 // === Conexão Oracle (ajuste usuário/senha/conn string) ===
 // Conexão Oracle
-require_once "config/AW00DB.php";
-require_once "config/oracle.class.php";
-require_once "config/AW00MD.php";
+require_once "../config/AW00DB.php";
+require_once "../config/oracle.class.php";
+require_once "../config/AW00MD.php";
 
 // === SQL com binds ===
 $sql = "
