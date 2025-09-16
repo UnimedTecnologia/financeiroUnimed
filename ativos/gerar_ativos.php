@@ -21,6 +21,21 @@ if (!$modalidade || !$proposta || !$ano  || !$mes ) {
     die("Informe todos os parametros");
 }
 
+// Transforma em array, limpa espaços e só deixa números
+$propostas = array_filter(array_map('trim', explode(',', $proposta)), 'is_numeric');
+
+// Garante que tem pelo menos uma
+if (empty($propostas)) {
+    die("Nenhuma proposta válida informada");
+}
+
+// Monta placeholders :p0, :p1, ...
+$placeholders = [];
+foreach ($propostas as $i => $val) {
+    $placeholders[] = ":p{$i}";
+}
+$placeholdersStr = implode(',', $placeholders);
+
 // Conexão Oracle
 require_once "../config/AW00DB.php";
 require_once "../config/oracle.class.php";
@@ -29,14 +44,14 @@ require_once "../config/AW00MD.php";
 // === SQL com binds ===
 $sql = "
 SELECT u.CD_MODALIDADE AS MODALIDADE, u.NR_PROPOSTA AS PROPOSTA, u2.NM_USUARIO AS TITULAR, u2.CD_CPF AS CPF_TITULAR, 
-u.cd_usuario, CI.CD_UNIMED||ci.CD_CARTEIRA_INTEIRA AS CARTEIRINHA, u.NM_USUARIO AS NOME, u.DT_INCLUSAO_PLANO AS DATA_INCLUSAO_PLANO,
+u.cd_usuario, CI.CD_UNIMED||ci.CD_CARTEIRA_INTEIRA AS CARTEIRINHA, u.NM_USUARIO AS NOME, to_char(u.DT_INCLUSAO_PLANO,'dd/mm/yyyy') AS DATA_INCLUSAO_PLANO,
 TO_CHAR(u.DT_NASCIMENTO, 'DD/MM/YYYY') AS DATA_NASCIMENTO, TRUNC(MONTHS_BETWEEN(SYSDATE, u.DT_NASCIMENTO) / 12) AS IDADE, 
 CASE 
 	WHEN u.lg_sexo = 0 THEN 'F'
 	WHEN u.lg_sexo = 1 THEN 'M'
 END AS SEXO, U.CD_CPF CPF, u.NR_IDENTIDADE AS IDENTIDADE, u.CD_PIS_PASEP PIS, u.DT_EXCLUSAO_PLANO DATA_DE_EXCLUSAO_DO_PLANO, u.NM_MAE NOME_MAE, 'PJE' AS TIPO_PESSOA,
 gp.ds_grau_parentesco GRAU_PARENTESCO, 'ENFERMARIA' AS TIPO_PLANO,
-u.EN_RUA AS ENDERECO, u.EN_BAIRRO AS BAIRRO, DC.NM_CIDADE CIDADE, u.EN_UF AS UF, u.EN_CEP AS CEP, PF.CHAR_2 as DECLARACAO_NASCIDO_VIVO, SUM(NVL(VB.VL_USUARIO,0)) VALOR
+u.EN_RUA AS ENDERECO, u.EN_BAIRRO AS BAIRRO, DC.NM_CIDADE CIDADE, u.EN_UF AS UF, u.EN_CEP AS CEP, PF.CHAR_2 as DECLARACAO_NASCIDO_VIVO, VB.VL_TOTAL VALOR
 	FROM gp.usuario u
 	LEFT JOIN gp.USUARIO u2 
        ON u2.CD_USUARIO = u.CD_TITULAR
@@ -52,18 +67,23 @@ u.EN_RUA AS ENDERECO, u.EN_BAIRRO AS BAIRRO, DC.NM_CIDADE CIDADE, u.EN_UF AS UF,
 	left JOIN gp.DZCIDADE dc ON dc.CD_CIDADE = u.CD_CIDADE 
 	left JOIN gp.car_ide ci ON ci.CD_USUARIO = u.CD_USUARIO AND ci.CD_MODALIDADE = u.CD_MODALIDADE AND ci.NR_TER_ADESAO = u.NR_TER_ADESAO 
 	INNER JOIN gp.GRA_PAR gp ON gp.CD_GRAU_PARENTESCO = u.CD_GRAU_PARENTESCO 
-	WHERE u.CD_MODALIDADE = :modalidade AND u.NR_PROPOSTA = :proposta AND VB.CD_EVENTO in('10','11') AND VB.AA_REFERENCIA = :ano AND  VB.MM_REFERENCIA = :mes
+	WHERE u.CD_MODALIDADE = :modalidade AND u.NR_PROPOSTA IN ($placeholdersStr) AND VB.CD_EVENTO in('10','11') AND VB.AA_REFERENCIA = :ano AND  VB.MM_REFERENCIA = :mes
+    AND VB.VL_TOTAL <> 0
   GROUP BY u.CD_MODALIDADE,u.NR_PROPOSTA,u2.NM_USUARIO,u2.CD_CPF,u.cd_usuario,CI.CD_UNIMED,ci.CD_CARTEIRA_INTEIRA,
            u.NM_USUARIO,u.DT_INCLUSAO_PLANO,u.DT_NASCIMENTO,u.DT_NASCIMENTO,u.lg_sexo,U.CD_CPF,u.NR_IDENTIDADE,
-           u.CD_PIS_PASEP,u.DT_EXCLUSAO_PLANO,u.NM_MAE,'PJE',gp.ds_grau_parentesco,u.EN_RUA,u.EN_BAIRRO,
-           DC.NM_CIDADE,u.EN_UF,u.EN_CEP,PF.CHAR_2
+           u.CD_PIS_PASEP,u.DT_EXCLUSAO_PLANO,u.NM_MAE,gp.ds_grau_parentesco,u.EN_RUA,u.EN_BAIRRO,
+           DC.NM_CIDADE,u.EN_UF,u.EN_CEP,PF.CHAR_2,VB.VL_TOTAL
 ";
 
 $stid = oci_parse($conn, $sql);
 oci_bind_by_name($stid, ":modalidade", $modalidade);
-oci_bind_by_name($stid, ":proposta", $proposta);
+// oci_bind_by_name($stid, ":proposta", $proposta);
 oci_bind_by_name($stid, ":ano", $ano);
 oci_bind_by_name($stid, ":mes", $mes);
+// Binds dinâmicos
+foreach ($propostas as $i => $val) {
+    oci_bind_by_name($stid, ":p{$i}", $propostas[$i]);
+}
 $r = @oci_execute($stid);
 if (!$r) {
     $err = oci_error($stid);

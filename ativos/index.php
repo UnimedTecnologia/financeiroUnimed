@@ -42,8 +42,8 @@
                         <div class="row justify-content-center">
                             <div class="col-md-12 mb-3">
                                 <div class="form-floating-label">
-                                    <input type="text" pattern="[0-9]*" class="form-control inputback" placeholder=" " id="nrPropostaAtivos" name="nrPropostaAtivos"  required >
-                                    <label for="nrPropostaAtivos" class="form-label">Número Proposta</label>
+                                    <input type="text" pattern="[0-9,]*" class="form-control inputback" placeholder=" " id="nrPropostaAtivos" name="nrPropostaAtivos"  required >
+                                    <label for="nrPropostaAtivos" class="form-label">Número Proposta (separado por vírgula)</label>
                                 </div>
                             </div>
                         </div>

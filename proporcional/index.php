@@ -57,7 +57,7 @@
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating-label">
                                     <input type="text" pattern="[0-9,]*" class="form-control inputback" placeholder=" " id="eventoProp" name="eventoProp" required>
-                                    <label for="eventoProp" class="form-label">Evento (separado por virgula)</label>
+                                    <label for="eventoProp" class="form-label">Evento (separado por vírgula)</label>
                                 </div>
                             </div>
                         </div>
